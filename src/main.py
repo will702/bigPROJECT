@@ -36,7 +36,7 @@ BoxLayout:
             on_selection: 
                 app.selected_file(*args)
             dirselect: True
-            path:'/users/willson'
+            path:'/sdcard'
             filters:['*.wav']
 
 
