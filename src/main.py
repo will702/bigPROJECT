@@ -9,7 +9,7 @@ from jnius import autoclass
 
 from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
-from plyer import filechooser
+
 SERVICE_NAME = u'{packagename}.Service{servicename}'.format(
     packagename=u'org.kivy.oscservice',
     servicename=u'Pong'
@@ -107,19 +107,7 @@ class ClientServerApp(App):
                 )
             self.service = None
 
-    def choose(self):
-        '''
-        Call plyer filechooser API to run a filechooser Activity.
-        '''
-        filechooser.open_file(on_selection=self.handle_selection)
 
-    def handle_selection(self, selection):
-        '''
-        Callback function for handling the selection response from Activity.
-        '''
-        self.selection = selection[0]
-
-        print(self.selection)
 
         self.send(argumen=self.selection)
 
