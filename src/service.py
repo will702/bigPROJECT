@@ -1,51 +1,62 @@
-'p4a example service using oscpy to communicate with main application.'
+# install_twisted_rector must be called before importing and using the reactor
+from kivy.support import install_twisted_reactor
+from time import sleep
+install_twisted_reactor()
 
-from time import localtime, asctime, sleep
-
-from oscpy.server import OSCThreadServer
-from oscpy.client import OSCClient
-
-from kivy.utils import platform
-CLIENT = OSCClient('localhost', 3002)
+from twisted.internet import reactor
+from twisted.internet import protocol
 
 
-def ping(*_):
+class EchoServer(protocol.Protocol):
+    def dataReceived(self, data):
+        response = self.factory.app.handle_message(data)
+        if response:
+            self.transport.write(response)
 
-    'answer to ping messages'
-    filename = _[0].decode('utf-8')
-    print(filename)
 
-    if platform == 'android':
+class EchoServerFactory(protocol.Factory):
+    protocol = EchoServer
+
+    def __init__(self, app):
+        self.app = app
+
+
+from kivy.app import App
+from kivy.uix.label import Label
+
+
+class TwistedServerApp(App):
+    label = None
+
+    def build(self):
+        self.label = Label(text="server started\n")
+        reactor.listenTCP(8000, EchoServerFactory(self))
+        return self.label
+
+    def handle_message(self, msg):
+        msg = msg.decode('utf-8')
+        self.label.text = "received:  {}\n".format(msg)
         from jnius import autoclass
 
         MediaPlayer = autoclass('android.media.MediaPlayer')
         AudioManager = autoclass('android.media.AudioManager')
         mPlayer = MediaPlayer()
         import audioread
-        with audioread.audio_open(filename) as f:
+        with audioread.audio_open(msg) as f:
+
             totalsec = f.duration
             min, sec = divmod(totalsec, 60)
-            sec = min*60+sec
-        mPlayer.setDataSource(filename)
+            sec = min * 60 + sec
+        mPlayer.setDataSource(msg)
         mPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION)
         mPlayer.prepare()
         mPlayer.start()
         sleep(sec)
         mPlayer.release()
 
-def send_date():
-    
-    'send date to the application'
-    CLIENT.send_message(
-        b'/date',
-        [asctime(localtime()).encode('utf8'),],
-    )
+        self.label.text += "responded: {}\n".format(msg)
+        return msg.encode('utf-8')
 
 
 if __name__ == '__main__':
-    SERVER = OSCThreadServer()
-    SERVER.listen('localhost', port=3000, default=True)
-    SERVER.bind(b'/ping', ping)
-    while True:
-        sleep(1)
-        send_date()
+    TwistedServerApp().run()

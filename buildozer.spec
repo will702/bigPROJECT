@@ -4,13 +4,13 @@
 title = Kivy service OSC demo
 
 # (str) Package name
-package.name = myapp
+package.name = oscservice
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.test
+package.domain = org.kivy
 
 # (str) Source code where the main.py live
-source.dir = .
+source.dir = src
 
 # (list) Source files to include (let empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas
@@ -37,7 +37,7 @@ version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,oscpy
+requirements = python3,kivy,twisted,audioread
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -86,7 +86,7 @@ fullscreen = 0
 #android.presplash_color = #FFFFFF
 
 # (list) Permissions
-android.permissions = INTERNET,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
+android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
 # (int) Android API to use
 #android.api = 28
