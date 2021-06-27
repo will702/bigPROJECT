@@ -10,6 +10,11 @@ from kivy.utils import platform
 
 from oscpy.client import OSCClient
 
+import certifi
+import os
+
+# Here's all the magic !
+os.environ['SSL_CERT_FILE'] = certifi.where()
 
 CLIENT = OSCClient('localhost', 3002,encoding='utf-8')
 

@@ -8,7 +8,11 @@ from jnius import autoclass
 
 from oscpy.client import OSCClient
 from oscpy.server import  OSCThreadServer
+import certifi
+import os
 
+
+os.environ['SSL_CERT_FILE'] = certifi.where()
 
 SERVICE_NAME = u'{packagename}.Service{servicename}'.format(
     packagename=u'org.kivy.oscservice',
