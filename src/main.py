@@ -1,8 +1,7 @@
 
 from kivy.app import App
 from kivy.lang import Builder
-
-
+__version__ = '2.0'
 from kivy.utils import platform
 
 from jnius import autoclass
@@ -109,7 +108,7 @@ class ClientServerApp(App):
 
 
 
-        self.send(argumen=self.selection)
+
 
     def send(self, *args, argumen):
         self.client.send_message(b'/ping', [f'{argumen}'])

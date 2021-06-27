@@ -25,9 +25,29 @@ def send_date():
         [asctime(localtime()), ],
     )
 
+    # if platform == 'android':
+    #     from jnius import autoclass
+    #
+    #     MediaPlayer = autoclass('android.media.MediaPlayer')
+    #     AudioManager = autoclass('android.media.AudioManager')
+    #     mPlayer = MediaPlayer()
+    #     import audioread
+    #     with audioread.audio_open('/sdcard/beep1.wav') as f:
+    #         totalsec = f.duration
+    #         min, sec = divmod(totalsec, 60)
+    #         sec = min * 60 + sec
+    #     mPlayer.setDataSource('/sdcard/beep1.wav')
+    #     mPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION)
+    #     mPlayer.prepare()
+    #     mPlayer.start()
+    #     sleep(sec)
+    #     mPlayer.release()
+    #
+    #
 
 
 def my_function(*args):
+    print('triggered')
     if platform == 'android':
         from jnius import autoclass
 
@@ -47,13 +67,14 @@ def my_function(*args):
         mPlayer.release()
 
 
-if __name__ == '__main__':
-    SERVER = OSCThreadServer(encoding='utf-8')
-    SERVER.listen('localhost', port=3000, default=True)
-    SERVER.bind(b'/ping', ping)
-    SERVER.bind(b'/my_function',my_function)
-    while True:
-        sleep(1)
-        send_date()
+
+SERVER = OSCThreadServer(encoding='utf-8')
+SERVER.listen('localhost', port=3000, default=True)
+SERVER.bind(b'/ping', ping)
+SERVER.bind(b'/my_function',my_function)
+
+while True:
+    sleep(1)
+    send_date()
 
 # coding: utf8
