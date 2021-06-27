@@ -4,6 +4,7 @@ from time import localtime, asctime, sleep
 
 from oscpy.server import OSCThreadServer
 from oscpy.client import OSCClient
+from kvdroid.audio  import player
 
 from kivy.utils import platform
 
@@ -45,22 +46,12 @@ class Service(object):
 
         if platform == 'android':
             if self.filename != '':
-                from jnius import autoclass
 
-                MediaPlayer = autoclass('android.media.MediaPlayer')
-                AudioManager = autoclass('android.media.AudioManager')
-                mPlayer = MediaPlayer()
-                import audioread
-                with audioread.audio_open(self.filename) as f:
-                    totalsec = f.duration
-                    min, sec = divmod(totalsec, 60)
-                    sec = min * 60 + sec
-                mPlayer.setDataSource(self.filename)
-                mPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION)
-                mPlayer.prepare()
-                mPlayer.start()
-                sleep(sec)
-                mPlayer.release()
+                player.play(self.filename)
+
+
+
+
 
 if __name__ == '__main__':
     service = Service()
