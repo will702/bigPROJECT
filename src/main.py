@@ -7,7 +7,8 @@ from kivy.utils import platform
 from jnius import autoclass
 
 from oscpy.client import OSCClient
-from oscpy.server import OSCThreadServer
+from oscpy.server import  OSCThreadServer
+
 
 SERVICE_NAME = u'{packagename}.Service{servicename}'.format(
     packagename=u'org.kivy.oscservice',
@@ -54,27 +55,36 @@ class ClientServerApp(App):
         self.service = None
         # self.start_service()
 
+
+
+
+        self.client = OSCClient('localhost', 3000,encoding='utf-8')
         self.server = server = OSCThreadServer(encoding='utf-8')
+
+
         server.listen(
-            address=b'localhost',
+            address='localhost',
             port=3002,
             default=True,
         )
+        server.bind('/message', self.display_message)
 
-        server.bind(b'/message', self.display_message)
-        server.bind(b'/date', self.date)
 
-        self.client = OSCClient(b'localhost', 3000,encoding='utf-8')
         self.root = Builder.load_string(KV)
         return self.root
-
+    def display_message(self,message):
+        if self.root:
+            self.root.ids.label.text += '{}\n'.format(message)
     def start_service(self):
+
         if platform == 'android':
             service = autoclass(SERVICE_NAME)
             self.mActivity = autoclass(u'org.kivy.android.PythonActivity').mActivity
             argument = ''
             service.start(self.mActivity, argument)
             self.service = service
+
+
 
         elif platform in ('linux', 'linux2', 'macosx', 'win'):
             from runpy import run_path
@@ -110,22 +120,13 @@ class ClientServerApp(App):
 
 
 
-    def send(self, *args, argumen):
-        self.client.send_message(b'/ping', [f'{argumen}'])
     def trying(self,*args):
-        self.client.send_message(b'/my_function',['/sdcard/beep1.wav'])
+        self.client.send_message('/my_function',['/sdcard/beep1.wav'])
 
 
 
-    def display_message(self, message):
 
-        if self.root:
-            self.root.ids.label.text += '{}\n'.format("Worked")
 
-    def date(self, message):
-
-        if self.root:
-            self.root.ids.date.text = message
 
 
 if __name__ == '__main__':
