@@ -37,7 +37,7 @@ version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,oscpy,audioread
+requirements = python3,kivy,oscpy,audioread,plyer
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -56,7 +56,7 @@ requirements = python3,kivy,oscpy,audioread
 orientation = all
 
 # (list) List of service to declare
-services = Pong:service.py
+services = Pong:service.py:foreground
 
 #
 # OSX Specific
