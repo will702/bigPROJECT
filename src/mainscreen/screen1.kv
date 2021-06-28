@@ -1,0 +1,17 @@
+<Screen1>:
+    MDToolbar:
+        title: "Music Player"
+        left_action_items: [['menu', lambda x: None]]
+        size_hint:1,0.05
+        pos_hint:{'top':1}
+    MDRoundFlatIconButton:
+        text: "Play"
+        icon: "movie-play"
+        pos_hint: {'center_x': .5, 'center_y': .2}
+        on_release: app.file_manager_open()
+
+#    MDRoundFlatIconButton:
+#        text: "Choose File"
+#        icon: "folder"
+#        pos_hint: {'center_x': .5, 'center_y': .2}
+#        on_release: app.file_manager_open()

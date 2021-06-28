@@ -1,0 +1,20 @@
+<MainScreen>:
+
+    #:import utils kivy.utils
+
+    background: ""
+    canvas.before:
+
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source:root.background
+
+
+
+
+    ScreenManager:
+        id: screen_manager
+        Screen1:
+            id:screen1
+            name:'screen1'

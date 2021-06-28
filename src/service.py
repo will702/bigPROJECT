@@ -4,7 +4,7 @@ from time import localtime, asctime, sleep
 
 from oscpy.server import OSCThreadServer
 from oscpy.client import OSCClient
-from kvdroid.audio  import player
+
 
 from kivy.utils import platform
 
@@ -25,18 +25,18 @@ class Service(object):
     def __init__(self):
 
         self.SERVER.bind(b'/ping', self.ping)
-        while True:
-            sleep(1)
-            self.send_date()
-
+       
+        
 
     def ping(self,*_):
         'answer to ping messages'
         filename = _[0].decode('utf-8')
         self.filename = filename
+        self.send_date()
 
     def send_date(self):
         'send date to the application'
+        print(self.filename)
 
 
         self.CLIENT.send_message(
@@ -46,15 +46,32 @@ class Service(object):
 
         if platform == 'android':
             if self.filename != '':
+                from jnius import autoclass
 
-                player.play(self.filename)
+                MediaPlayer = autoclass('android.media.MediaPlayer')
+                AudioManager = autoclass('android.media.AudioManager')
+                mPlayer = MediaPlayer()
+                import audioread
+                with audioread.audio_open(self.filename) as f:
+                    totalsec = f.duration
+                    min, sec = divmod(totalsec, 60)
+                    sec = min * 60 + sec
+                mPlayer.setDataSource(self.filename)
+                mPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION)
+                mPlayer.prepare()
+                mPlayer.start()
+                sleep(sec)
+                mPlayer.release()
 
 
 
 
 
 if __name__ == '__main__':
-    service = Service()
+    from kivy.clock import Clock
+   
+    service = Service()    
+    Clock.schedule_interval(lambda df :service,0.1)
 
 
 
